@@ -1,13 +1,16 @@
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, BackgroundTasks
 from openai import OpenAI
 import os
 import logging
 import pandas as pd
 import json
+import asyncio
+from typing import Dict
+from datetime import datetime
 from dotenv import load_dotenv
 from price_predict import CropsPricePredictor 
 from weather import get_weather_forecast
-
+from task_manager import FarmTaskManager
 # Setup
 load_dotenv()
 app = FastAPI()
@@ -158,9 +161,58 @@ async def get_weather_alert():
         }
 
 
-@app.get("/health")
-async def health_check():
-    return {"status": "healthy", "service": "Farm Assistant API"}
+
+# Initialize task manager
+task_manager = FarmTaskManager()
+
+@app.post("/tasks/generate")
+async def generate_tasks():
+    """Generate AI-recommended tasks based on current conditions"""
+    try:
+        # Get current conditions
+        weather_data = get_weather_forecast()
+        if weather_data["status"] == "error":
+            raise HTTPException(status_code=500, detail="Failed to fetch weather data")
+            
+        # Get crop predictions
+        predictor = CropsPricePredictor()
+        crop_info = {
+            crop: predictor.predict_single_price(
+                datetime.now().strftime("%Y-%m-%d"),
+                crop,
+                "Region IV-A"  # Default region
+            ) for crop in ["Rice", "Corn", "Cassava"]
+        }
+        
+        # Generate tasks
+        tasks = await task_manager.generate_tasks(weather_data, crop_info)
+        
+        # Prioritize tasks
+        prioritized_tasks = await task_manager.prioritize_tasks(tasks, {
+            "weather": weather_data,
+            "market_conditions": crop_info
+        })
+        
+        return {
+            "status": "success",
+            "tasks": prioritized_tasks
+        }
+        
+    except Exception as e:
+        logger.error(f"Task generation failed: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/tasks/{task_id}/feedback")
+async def submit_task_feedback(task_id: str, feedback: Dict):
+    """Submit feedback for task recommendations"""
+    try:
+        task_manager.process_feedback(task_id, feedback)
+        return {"status": "success", "message": "Feedback processed"}
+    except Exception as e:
+        logger.error(f"Failed to process feedback: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 
 
 if __name__ == "__main__":
