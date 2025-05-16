@@ -1,0 +1,151 @@
+Buyer Name,Region,Crop Interest,Quantity Desired (kg),Budget (PHP),Purchase Intent,Buyer Type,Climate Preference,Risk Tolerance
+Jose Mendoza,Ilocos Region,Sugarcane,6650,129414.24,High,Retailer,Humid,Medium
+Carlos Dela Cruz,Zamboanga Peninsula,Tobacco,8487,106244.63,Medium,Individual,Dry,Medium
+Carlos Flores,Eastern Visayas,Coffee,4541,40296.13,High,Co-op,Dry,Medium
+Maria Mendoza,Western Visayas,Tobacco,4207,265381.49,High,Co-op,Warm,Low
+Carlos Gomez,SOCCSKSARGEN,Banana,1597,41189.65,High,Retailer,Warm,Low
+Juan Reyes,Central Visayas,Coffee,2975,383280.44,Low,Co-op,Cool,Medium
+Carlos Garcia,SOCCSKSARGEN,Coffee,9704,435274.76,High,Co-op,Cool,High
+Pedro Reyes,SOCCSKSARGEN,Pineapple,7751,410009.9,High,Co-op,Dry,Medium
+Pedro Ramos,Central Luzon,Tobacco,9442,423291.67,Medium,Co-op,Humid,Low
+Ana Torres,Eastern Visayas,Tomato,9145,488527.91,High,Individual,Dry,High
+Manuel Mendoza,Davao Region,Mango,6590,442411.6,High,Individual,Humid,High
+Manuel Cruz,Cagayan Valley,Garlic,2539,53209.76,High,Co-op,Warm,High
+Pedro Ramos,Zamboanga Peninsula,Tobacco,6053,303546.97,Medium,Retailer,Humid,Medium
+Rosa Cruz,Cagayan Valley,Sugarcane,9469,414000.06,High,Co-op,Humid,Low
+Rosa Gomez,Western Visayas,Pineapple,2960,460605.54,High,Retailer,Dry,High
+Carlos Garcia,Western Visayas,Tobacco,4495,211861.5,High,Individual,Dry,High
+Ana Flores,Ilocos Region,Tomato,5592,446215.15,High,Retailer,Humid,Medium
+Ana Cruz,SOCCSKSARGEN,Sugarcane,6977,413944.7,High,Individual,Humid,High
+Juan Dela Cruz,Northern Mindanao,Onion,2380,22017.14,High,Individual,Warm,Low
+Jose Torres,Central Luzon,Coffee,4544,340150.21,High,Retailer,Warm,Low
+Juan Mendoza,Central Luzon,Rice,9843,164667.65,High,Co-op,Humid,Medium
+Carlos Flores,Western Visayas,Mango,8272,327987.4,High,Co-op,Dry,Low
+Maria Torres,CALABARZON,Coffee,5395,469686.36,High,Retailer,Dry,Medium
+Elena Cruz,Bicol Region,Rice,980,176726.2,Low,Retailer,Humid,Low
+Carlos Ramos,Northern Mindanao,Pineapple,547,113666.59,High,Individual,Humid,Medium
+Juan Garcia,Central Visayas,Pineapple,7698,6616.32,High,Individual,Humid,High
+Luisa Gomez,SOCCSKSARGEN,Corn,5286,337788.63,High,Co-op,Warm,Low
+Ana Ramos,Davao Region,Garlic,3845,296162.49,High,Individual,Dry,Low
+Manuel Flores,Davao Region,Mango,5275,486542.31,Medium,Individual,Cool,Low
+Maria Santos,Bicol Region,Onion,3324,93211.6,High,Co-op,Humid,Medium
+Jose Ramos,Central Luzon,Mango,6684,244321.98,Medium,Co-op,Dry,Low
+Pedro Reyes,Davao Region,Corn,6544,268827.75,High,Co-op,Humid,High
+Ana Santos,Central Luzon,Sugarcane,3602,479286.04,Medium,Retailer,Cool,Low
+Juan Garcia,Central Visayas,Banana,4888,100802.08,High,Individual,Humid,Low
+Pedro Mendoza,CALABARZON,Coconut,7926,304051.22,Medium,Retailer,Warm,Medium
+Maria Garcia,SOCCSKSARGEN,Rice,439,448695.52,Medium,Individual,Cool,High
+Jose Garcia,Ilocos Region,Tomato,2282,182802.85,High,Co-op,Cool,Low
+Juan Torres,Cagayan Valley,Sugarcane,231,98332.79,High,Retailer,Dry,High
+Rosa Gomez,Davao Region,Pineapple,5462,259256.27,Medium,Retailer,Cool,High
+Rosa Dela Cruz,Bicol Region,Onion,5323,438059.07,Medium,Retailer,Dry,Low
+Elena Mendoza,Ilocos Region,Garlic,1732,213830.15,Low,Individual,Humid,High
+Rosa Dela Cruz,Bicol Region,Tobacco,8639,185456.16,High,Co-op,Warm,High
+Elena Dela Cruz,Davao Region,Onion,511,109124.99,High,Individual,Cool,High
+Pedro Flores,Zamboanga Peninsula,Banana,9934,435912.35,High,Individual,Humid,Low
+Luisa Mendoza,SOCCSKSARGEN,Rice,5485,30592.53,Medium,Retailer,Cool,High
+Manuel Santos,Northern Mindanao,Rice,4293,124718.88,High,Co-op,Cool,Medium
+Elena Flores,Zamboanga Peninsula,Mango,1493,83956.46,High,Individual,Warm,Low
+Juan Santos,Cagayan Valley,Tobacco,2393,226132.74,Low,Co-op,Dry,Medium
+Manuel Flores,Central Visayas,Onion,7728,401316.72,High,Individual,Cool,Low
+Luisa Mendoza,Zamboanga Peninsula,Tomato,8119,186790.48,Medium,Individual,Warm,Low
+Carlos Santos,SOCCSKSARGEN,Pineapple,7988,491312.01,High,Retailer,Dry,Low
+Pedro Reyes,Western Visayas,Tomato,2947,478722.0,High,Co-op,Cool,Medium
+Manuel Flores,CALABARZON,Banana,3037,224200.23,Low,Retailer,Cool,High
+Juan Cruz,Davao Region,Tomato,2084,202057.21,Medium,Retailer,Warm,High
+Rosa Mendoza,Cagayan Valley,Coffee,3992,317940.81,High,Co-op,Cool,Low
+Juan Mendoza,Zamboanga Peninsula,Coconut,6631,435698.18,Medium,Co-op,Cool,Low
+Elena Flores,Zamboanga Peninsula,Mango,4202,256374.76,High,Retailer,Humid,Medium
+Rosa Santos,Ilocos Region,Coconut,2613,314789.28,High,Co-op,Dry,Low
+Luisa Garcia,Cagayan Valley,Pineapple,5434,471483.07,High,Co-op,Humid,Low
+Jose Mendoza,Ilocos Region,Sugarcane,1314,99459.6,High,Retailer,Warm,Medium
+Manuel Dela Cruz,SOCCSKSARGEN,Garlic,2308,405989.17,Medium,Retailer,Cool,Medium
+Elena Mendoza,Cagayan Valley,Mango,9485,114192.09,High,Co-op,Warm,Low
+Maria Flores,SOCCSKSARGEN,Coconut,5892,480833.51,Medium,Co-op,Humid,Low
+Ana Ramos,Cagayan Valley,Onion,8797,295389.99,Low,Co-op,Cool,High
+Rosa Dela Cruz,CALABARZON,Sugarcane,6056,141361.1,High,Retailer,Dry,Low
+Juan Cruz,Zamboanga Peninsula,Banana,6429,440825.84,High,Retailer,Dry,Low
+Carlos Reyes,Eastern Visayas,Banana,9712,167453.87,High,Retailer,Warm,Low
+Ana Dela Cruz,Eastern Visayas,Banana,2985,172592.32,High,Retailer,Cool,Medium
+Juan Torres,Ilocos Region,Tomato,1323,405141.75,High,Co-op,Warm,Medium
+Rosa Cruz,CALABARZON,Garlic,6250,449896.21,Medium,Co-op,Cool,Medium
+Carlos Dela Cruz,Ilocos Region,Corn,6918,54657.04,High,Co-op,Cool,High
+Elena Cruz,Davao Region,Corn,7798,341715.74,Low,Co-op,Warm,Medium
+Rosa Ramos,CALABARZON,Garlic,6543,265862.95,High,Retailer,Humid,Medium
+Elena Ramos,CALABARZON,Pineapple,9838,101627.6,High,Retailer,Warm,High
+Ana Reyes,Central Luzon,Garlic,3503,16198.7,High,Individual,Dry,Medium
+Manuel Mendoza,Eastern Visayas,Mango,6331,170535.55,Low,Retailer,Humid,High
+Ana Garcia,Bicol Region,Tobacco,5123,129152.27,High,Retailer,Cool,High
+Ana Santos,Eastern Visayas,Mango,9021,423701.41,High,Co-op,Humid,Medium
+Luisa Gomez,Western Visayas,Garlic,5937,363498.41,High,Retailer,Humid,Low
+Rosa Santos,Western Visayas,Pineapple,8186,482029.05,High,Retailer,Warm,Medium
+Pedro Flores,Cagayan Valley,Banana,6081,117531.54,Low,Individual,Humid,Low
+Elena Cruz,Davao Region,Corn,7080,429354.23,Medium,Retailer,Warm,Medium
+Jose Santos,Central Visayas,Banana,4531,313552.43,Medium,Retailer,Dry,High
+Juan Reyes,Northern Mindanao,Pineapple,2301,337572.41,High,Co-op,Dry,Low
+Maria Dela Cruz,Ilocos Region,Coffee,8773,274494.29,High,Co-op,Dry,Medium
+Manuel Torres,Zamboanga Peninsula,Mango,9690,85719.29,High,Retailer,Humid,Low
+Pedro Dela Cruz,Western Visayas,Banana,4233,100100.58,High,Individual,Warm,High
+Carlos Flores,Davao Region,Tobacco,989,475022.48,High,Retailer,Humid,Low
+Ana Mendoza,Bicol Region,Corn,8282,265035.72,High,Retailer,Cool,Medium
+Juan Dela Cruz,Cagayan Valley,Banana,4924,256847.18,Low,Retailer,Humid,High
+Elena Dela Cruz,Cagayan Valley,Tomato,932,121017.3,High,Individual,Warm,Low
+Maria Flores,Ilocos Region,Tomato,4227,448249.96,Medium,Individual,Dry,Low
+Rosa Gomez,Central Visayas,Corn,2371,469605.79,Medium,Individual,Cool,Low
+Ana Dela Cruz,Cagayan Valley,Mango,3871,88665.97,High,Retailer,Cool,Medium
+Pedro Flores,Central Visayas,Sugarcane,2657,487640.74,High,Co-op,Humid,High
+Maria Cruz,Ilocos Region,Pineapple,1991,107288.89,Low,Co-op,Warm,High
+Juan Flores,Northern Mindanao,Sugarcane,6100,447833.45,High,Retailer,Cool,High
+Maria Ramos,Western Visayas,Onion,8387,452710.88,High,Individual,Cool,Low
+Luisa Flores,Bicol Region,Garlic,8790,389799.88,High,Individual,Warm,Low
+Elena Ramos,Eastern Visayas,Sugarcane,9614,491905.99,High,Co-op,Humid,Medium
+Manuel Flores,CALABARZON,Sugarcane,5948,285862.57,Low,Retailer,Humid,Low
+Ana Reyes,Davao Region,Tobacco,607,427908.64,High,Co-op,Warm,Medium
+Carlos Garcia,Bicol Region,Tobacco,9421,264499.66,Medium,Individual,Humid,Low
+Carlos Torres,Western Visayas,Rice,4067,129215.67,High,Retailer,Warm,High
+Juan Santos,Northern Mindanao,Banana,8481,280751.68,High,Individual,Warm,High
+Maria Ramos,Bicol Region,Pineapple,1579,41587.08,High,Retailer,Dry,High
+Ana Gomez,Western Visayas,Sugarcane,5174,154358.47,High,Individual,Warm,High
+Carlos Cruz,Davao Region,Coffee,5512,455331.88,Low,Retailer,Humid,Medium
+Ana Garcia,Central Luzon,Banana,459,448943.47,High,Co-op,Warm,High
+Maria Reyes,Ilocos Region,Rice,2108,142331.18,High,Retailer,Dry,Medium
+Luisa Cruz,Zamboanga Peninsula,Corn,1867,469250.1,High,Individual,Warm,Low
+Elena Garcia,Davao Region,Coffee,7783,115058.35,High,Retailer,Dry,High
+Elena Cruz,Zamboanga Peninsula,Tobacco,562,294335.32,Medium,Individual,Humid,High
+Juan Santos,Ilocos Region,Onion,3424,199005.21,High,Co-op,Dry,Medium
+Juan Reyes,CALABARZON,Tomato,3482,332563.84,High,Retailer,Dry,Low
+Carlos Santos,Davao Region,Garlic,923,80335.26,High,Retailer,Dry,High
+Jose Torres,Davao Region,Tomato,9988,99956.65,High,Individual,Dry,Medium
+Luisa Dela Cruz,SOCCSKSARGEN,Rice,6275,144362.41,High,Retailer,Humid,Medium
+Juan Flores,SOCCSKSARGEN,Mango,3318,380357.61,High,Individual,Dry,Medium
+Ana Torres,Northern Mindanao,Rice,7870,155429.65,High,Retailer,Dry,Medium
+Ana Reyes,CALABARZON,Mango,9821,348967.52,High,Individual,Dry,High
+Maria Santos,Bicol Region,Mango,9308,498983.45,High,Co-op,Cool,Medium
+Elena Flores,Eastern Visayas,Coffee,4374,282971.16,Medium,Retailer,Warm,High
+Maria Gomez,Western Visayas,Sugarcane,1549,206931.78,Medium,Retailer,Warm,Low
+Pedro Flores,Northern Mindanao,Tobacco,7333,491476.9,High,Retailer,Humid,Medium
+Carlos Gomez,Central Visayas,Tomato,7072,352818.03,High,Co-op,Dry,Low
+Manuel Ramos,Zamboanga Peninsula,Corn,7259,413456.94,High,Retailer,Cool,High
+Carlos Dela Cruz,Northern Mindanao,Banana,1812,194055.55,Medium,Co-op,Humid,Medium
+Maria Reyes,CALABARZON,Tomato,4093,230121.06,High,Retailer,Dry,Low
+Elena Reyes,Eastern Visayas,Garlic,3677,107106.33,High,Individual,Warm,Medium
+Jose Cruz,Western Visayas,Coffee,3401,443119.53,High,Individual,Cool,Low
+Juan Dela Cruz,Western Visayas,Tobacco,3557,136614.29,Medium,Co-op,Dry,High
+Manuel Flores,Central Luzon,Onion,5105,246931.29,High,Co-op,Warm,Low
+Carlos Garcia,Cagayan Valley,Sugarcane,5718,348603.8,Medium,Retailer,Cool,Low
+Ana Dela Cruz,CALABARZON,Corn,2119,336287.1,Low,Individual,Cool,Medium
+Maria Garcia,Davao Region,Banana,7565,192676.57,High,Co-op,Warm,High
+Manuel Cruz,Ilocos Region,Sugarcane,9491,381392.53,High,Individual,Dry,High
+Manuel Reyes,Eastern Visayas,Banana,9746,254375.16,High,Co-op,Dry,Medium
+Elena Gomez,Ilocos Region,Garlic,6989,39513.84,Low,Co-op,Dry,Medium
+Elena Santos,Western Visayas,Corn,6659,439454.6,Medium,Co-op,Cool,Low
+Elena Reyes,Ilocos Region,Onion,3690,8718.24,High,Individual,Warm,High
+Juan Torres,Central Luzon,Coffee,5000,285767.38,High,Retailer,Humid,High
+Carlos Reyes,CALABARZON,Pineapple,6887,462851.11,Medium,Individual,Dry,Low
+Luisa Flores,Ilocos Region,Mango,9039,447508.35,Low,Retailer,Warm,Medium
+Pedro Santos,SOCCSKSARGEN,Coconut,6109,373557.85,High,Co-op,Humid,High
+Luisa Dela Cruz,Ilocos Region,Coconut,8803,278598.48,High,Co-op,Humid,Medium
+Elena Mendoza,Davao Region,Pineapple,5848,166915.76,High,Retailer,Dry,Low
+Pedro Flores,Bicol Region,Garlic,9913,270496.66,High,Co-op,Humid,Medium
+Rosa Ramos,Zamboanga Peninsula,Garlic,6451,127877.98,High,Co-op,Cool,Medium
+Jose Cruz,Davao Region,Banana,9303,37517.5,Medium,Individual,Dry,Low
