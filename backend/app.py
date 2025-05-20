@@ -5,20 +5,23 @@ import logging
 import pandas as pd
 import json
 import asyncio
-from typing import Dict
+from typing import Dict, List
 from datetime import datetime
 from dotenv import load_dotenv
 from price_predict import CropsPricePredictor 
 from weather import get_weather_forecast
 from task_manager import FarmTaskManager
+
 # Setup
 load_dotenv()
-app = FastAPI()
-predictor = CropsPricePredictor() 
+app = FastAPI(title="Farm Assistant API")
+predictor = CropsPricePredictor()
+task_manager = FarmTaskManager()
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-    
+
+# Initialize OpenAI client for endpoints that use it directly
 client = OpenAI(
     base_url="https://openrouter.ai/api/v1",
     api_key=os.getenv('OPENROUTER_API_KEY'),
@@ -28,12 +31,21 @@ client = OpenAI(
     }
 )
 
+@app.get("/")
+async def root():
+    """API root endpoint"""
+    return {
+        "status": "running",
+        "api_version": "1.0.0",
+        "service": "Farm Assistant API"
+    }
+
 @app.post("/live-model-test")
 async def test_model_with_live_weather(
     crop: str = Query(...),
     region: str = Query(...)
-    #placeholder for now, use actual user input when avail
 ):
+    """Test the price prediction model with live weather data"""
     try:
         date = pd.Timestamp.now().strftime("%Y-%m-%d")
         price_prediction = predictor.predict_single_price(date, crop, region)
@@ -68,7 +80,7 @@ async def test_model_with_live_weather(
             stream=False
         )
 
-                # Extract response content safely
+        # Extract response content safely
         choices = getattr(completion, "choices", [])
         tagalog_summary = None
         if choices:
@@ -81,7 +93,6 @@ async def test_model_with_live_weather(
             if tagalog_summary.startswith("\\boxed{") and tagalog_summary.endswith("}"):
                 tagalog_summary = tagalog_summary[8:-1]
             tagalog_summary = tagalog_summary.replace("\\boxed", "").replace("{", "").replace("}", "")
-
 
         # Clean and build a one-paragraph summary
         price = price_prediction["prediction"]["base_price"]
@@ -103,9 +114,9 @@ async def test_model_with_live_weather(
         logger.error(f"Live model test failed: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail="Live model test failed.")
 
-
 @app.get("/weather-alert")
 async def get_weather_alert():
+    """Generate weather alerts in Tagalog for farmers"""
     try:
         weather_data = get_weather_forecast()
         weather_context = json.dumps(weather_data, indent=2)
@@ -150,6 +161,7 @@ async def get_weather_alert():
                     content = getattr(message, "content", None) or getattr(message, "reasoning", None)
 
         return {
+            "status": "success",
             "explanation": content.strip() if content else "Walang available na weather alert"
         }
         
@@ -160,62 +172,124 @@ async def get_weather_alert():
             "explanation": "May error sa weather alert system"
         }
 
-
-
-# Initialize task manager
-task_manager = FarmTaskManager()
-
 @app.post("/tasks/generate")
-async def generate_tasks():
-    """Generate AI-recommended tasks based on current conditions"""
+async def generate_tasks(background_tasks: BackgroundTasks):
+    """Generate AI-recommended farm tasks based on current conditions"""
     try:
-        # Get current conditions
+        # Get current weather conditions
         weather_data = get_weather_forecast()
-        if weather_data["status"] == "error":
+        if not weather_data or (isinstance(weather_data, dict) and weather_data.get("status") == "error"):
             raise HTTPException(status_code=500, detail="Failed to fetch weather data")
             
-        # Get crop predictions
+        # Get crop predictions for common crops
         predictor = CropsPricePredictor()
-        crop_info = {
-            crop: predictor.predict_single_price(
-                datetime.now().strftime("%Y-%m-%d"),
-                crop,
-                "Region IV-A"  # Default region
-            ) for crop in ["Rice", "Corn", "Cassava"]
-        }
+        date_str = datetime.now().strftime("%Y-%m-%d")
+        region = "Region IV-A"  # Default region
+        crop_info = {}
         
-        # Generate tasks
-        tasks = await task_manager.generate_tasks(weather_data, crop_info)
+        for crop in ["Rice", "Corn", "Cassava"]:
+            try:
+                prediction = predictor.predict_single_price(date_str, crop, region)
+                crop_info[crop] = prediction
+            except Exception as e:
+                logger.warning(f"Failed to get prediction for {crop}: {str(e)}")
+                crop_info[crop] = {"status": "error", "message": f"Prediction failed for {crop}"}
         
-        # Prioritize tasks
-        prioritized_tasks = await task_manager.prioritize_tasks(tasks, {
-            "weather": weather_data,
-            "market_conditions": crop_info
-        })
+        # Generate tasks asynchronously
+        # We'll start the task generation but return immediately for better UX
+        background_tasks.add_task(task_manager.generate_tasks, weather_data, crop_info)
         
         return {
             "status": "success",
-            "tasks": prioritized_tasks
+            "message": "Task generation started. Check /tasks/list to view tasks once generated."
         }
         
     except Exception as e:
-        logger.error(f"Task generation failed: {str(e)}")
+        logger.error(f"Task generation failed: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/tasks/list")
+async def list_tasks():
+    """List all generated tasks"""
+    try:
+        tasks = list(task_manager.tasks.values())
+        
+        # Sort by priority
+        priority_order = {"High": 0, "Medium": 1, "Low": 2}
+        sorted_tasks = sorted(tasks, key=lambda x: priority_order.get(x.get("priority", "Medium"), 1))
+        
+        return {
+            "status": "success",
+            "count": len(sorted_tasks),
+            "tasks": sorted_tasks
+        }
+    except Exception as e:
+        logger.error(f"Failed to list tasks: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/tasks/{task_id}/feedback")
 async def submit_task_feedback(task_id: str, feedback: Dict):
     """Submit feedback for task recommendations"""
     try:
-        task_manager.process_feedback(task_id, feedback)
+        if not feedback or "rating" not in feedback:
+            raise HTTPException(status_code=400, detail="Feedback must include a rating")
+            
+        success = task_manager.process_feedback(task_id, feedback)
+        
+        if not success:
+            raise HTTPException(status_code=404, detail=f"Task ID {task_id} not found")
+            
         return {"status": "success", "message": "Feedback processed"}
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Failed to process feedback: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.post("/selling-initiatives/generate")
+async def generate_selling_initiatives(
+    background_tasks: BackgroundTasks,
+    user_crops: List[str] = Query(..., description="List of crops the user has"),
+    buyers_file: str = Query("fictional_buyers_dataset.csv", description="Path to CSV file with buyer data"),
+    prices_file: str = Query("philippines_crop_prices_mock_data.csv", description="Path to CSV file with crop price data")
+):
+    """Generate AI-recommended selling initiatives based on buyer and crop price data"""
+    try:
+        # Start initiative generation in the background for better UX
+        background_tasks.add_task(
+            task_manager.generate_selling_initiatives, 
+            user_crops=user_crops,  # Pass the new parameter
+            buyers_file_path=buyers_file,
+            crop_prices_file_path=prices_file
+        )
+        
+        return {
+            "status": "success",
+            "message": "Selling initiative generation started. Check /selling-initiatives/list to view results once generated."
+        }
+    except Exception as e:
+        logger.error(f"Selling initiative generation failed to start: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
-
+@app.get("/selling-initiatives/list")
+async def list_selling_initiatives():
+    """List all generated selling initiatives"""
+    try:
+        initiatives = task_manager.initiatives
+        
+        return {
+            "status": "success",
+            "count": len(initiatives),
+            "initiatives": initiatives
+        }
+    except Exception as e:
+        logger.error(f"Failed to list selling initiatives: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
     import uvicorn
     logger.info("Starting Farm Assistant API server")
+    # Check if API key is set
+    if not os.getenv("OPENROUTER_API_KEY"):
+        logger.warning("OPENROUTER_API_KEY is not set. AI features will not function correctly.")
     uvicorn.run(app, host="0.0.0.0", port=8000)
