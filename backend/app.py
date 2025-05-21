@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 from price_predict import CropsPricePredictor 
 from weather import get_weather_forecast
 from task_manager import FarmTaskManager
+from fastapi import BackgroundTasks
 
 # Setup
 load_dotenv()
@@ -42,12 +43,13 @@ async def root():
 
 @app.post("/live-model-test")
 async def test_model_with_live_weather(
-    crop: str = Query(...),
+    crop: str = Query(...), 
     region: str = Query(...)
 ):
     """Test the price prediction model with live weather data"""
     try:
-        date = pd.Timestamp.now().strftime("%Y-%m-%d")
+        date_obj = pd.Timestamp.now()
+        date = date_obj.strftime("%B %d, %Y")   
         price_prediction = predictor.predict_single_price(date, crop, region)
 
         if price_prediction["status"] != "success":
@@ -61,15 +63,17 @@ async def test_model_with_live_weather(
             messages=[
                 {
                     "role": "system",
-                    "content": f"""Magbigay ng *maikling* weather alert para sa mga magsasaka base sa weather na ito: {weather_json}
-                        IMPORTANT RULES:
-                        - TAGALOG LANG.
-                        - HUWAG BANGGITIN ANG MGA NUMERO o DETALYENG TEKNIKAL.
-                        - HUWAG IULIT ANG WEATHER DATA.
-                        - Isang pangungusap lang (maximum 2 kung talagang kailangan).
-                        - Tumuon sa epekto sa pagsasaka.
-                        - Simple, malinaw, direkta.
-                        """
+                    "content": f"""Gamit ang datos ng presyo at lagay ng panahon, magbigay ng *maikling buod* para sa mga magsasaka tungkol sa inaasahang bentahan ng {crop} sa {region} ngayong araw.
+
+                    IMPORTANT RULES:
+                    - TAGALOG LANG.
+                    - HUWAG BANGGITIN ANG MGA NUMERO o DETALYENG TEKNIKAL.
+                    - HUWAG IULIT ANG WEATHER DATA.
+                    - TUON SA PRESYO at BENTA ng ANI, hindi sa weather.
+                    - WEATHER ay banggitin lang kung ito ay may malinaw na epekto sa ani o presyo.
+                    - ISANG pangungusap lang (dalawa kung talagang kailangan).
+                    - SIMPLE, MALIWANAG, at DIREKTA ang tono.
+                    """
                 },
                 {
                     "role": "user",
@@ -107,8 +111,15 @@ async def test_model_with_live_weather(
 
         return {
             "status": "success",
-            "summary": combined_summary
+            "summary": combined_summary,
+            "follow_up": f"Gusto mo ba ibenta {crop} sa {region}? Mag type ng 'OO' upang ituloy.",
+            "next_action": {
+                "endpoint": "/selling-initiatives/generate",
+                "method": "POST",
+                "params_needed": ["user_crops", "buyers_file", "prices_file"]
+            }
         }
+
 
     except Exception as e:
         logger.error(f"Live model test failed: {str(e)}", exc_info=True)
@@ -285,6 +296,38 @@ async def list_selling_initiatives():
     except Exception as e:
         logger.error(f"Failed to list selling initiatives: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
+    
+
+@app.post("/confirm-sell")
+async def confirm_selling_decision(
+    background_tasks: BackgroundTasks,
+    response: str = Query(...),
+    crop: str = Query(...),
+    region: str = Query(...)
+):
+    """Handles user confirmation to sell crops"""
+    if response.strip().upper() == "OO":
+        try:
+            background_tasks.add_task(
+                task_manager.generate_selling_initiatives,
+                user_crops=[crop],
+                buyers_file_path="fictional_buyers_dataset.csv",
+                crop_prices_file_path="philippines_crop_prices_mock_data.csv"
+            )
+            return {
+                "status": "success",
+                "message": f"Okay! Sinimulan na ang paghahanap ng buyer para sa {crop} sa {region}.",
+                "next_check": "/selling-initiatives/list"
+            }
+        except Exception as e:
+            logger.error(f"Failed to start selling initiative: {str(e)}")
+            raise HTTPException(status_code=500, detail="Selling process failed.")
+    else:
+        return {
+            "status": "cancelled",
+            "message": "Hindi itinuloy ang pagbenta."
+        }
+
 
 if __name__ == "__main__":
     import uvicorn
