@@ -114,7 +114,7 @@ async def test_model_with_live_weather(
             "summary": combined_summary,
             "follow_up": f"Gusto mo ba ibenta {crop} sa {region}? Mag type ng 'OO' upang ituloy.",
             "next_action": {
-                "endpoint": "/selling-initiatives/generate",
+                "endpoint": "/confirm-sell",
                 "method": "POST",
                 "params_needed": ["user_crops", "buyers_file", "prices_file"]
             }
@@ -183,104 +183,8 @@ async def get_weather_alert():
             "explanation": "May error sa weather alert system"
         }
 
-@app.post("/tasks/generate")
-async def generate_tasks(background_tasks: BackgroundTasks):
-    """Generate AI-recommended farm tasks based on current conditions"""
-    try:
-        # Get current weather conditions
-        weather_data = get_weather_forecast()
-        if not weather_data or (isinstance(weather_data, dict) and weather_data.get("status") == "error"):
-            raise HTTPException(status_code=500, detail="Failed to fetch weather data")
-            
-        # Get crop predictions for common crops
-        predictor = CropsPricePredictor()
-        date_str = datetime.now().strftime("%Y-%m-%d")
-        region = "Region IV-A"  # Default region
-        crop_info = {}
-        
-        for crop in ["Rice", "Corn", "Cassava"]:
-            try:
-                prediction = predictor.predict_single_price(date_str, crop, region)
-                crop_info[crop] = prediction
-            except Exception as e:
-                logger.warning(f"Failed to get prediction for {crop}: {str(e)}")
-                crop_info[crop] = {"status": "error", "message": f"Prediction failed for {crop}"}
-        
-        # Generate tasks asynchronously
-        # We'll start the task generation but return immediately for better UX
-        background_tasks.add_task(task_manager.generate_tasks, weather_data, crop_info)
-        
-        return {
-            "status": "success",
-            "message": "Task generation started. Check /tasks/list to view tasks once generated."
-        }
-        
-    except Exception as e:
-        logger.error(f"Task generation failed: {str(e)}", exc_info=True)
-        raise HTTPException(status_code=500, detail=str(e))
 
-@app.get("/tasks/list")
-async def list_tasks():
-    """List all generated tasks"""
-    try:
-        tasks = list(task_manager.tasks.values())
-        
-        # Sort by priority
-        priority_order = {"High": 0, "Medium": 1, "Low": 2}
-        sorted_tasks = sorted(tasks, key=lambda x: priority_order.get(x.get("priority", "Medium"), 1))
-        
-        return {
-            "status": "success",
-            "count": len(sorted_tasks),
-            "tasks": sorted_tasks
-        }
-    except Exception as e:
-        logger.error(f"Failed to list tasks: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
 
-@app.post("/tasks/{task_id}/feedback")
-async def submit_task_feedback(task_id: str, feedback: Dict):
-    """Submit feedback for task recommendations"""
-    try:
-        if not feedback or "rating" not in feedback:
-            raise HTTPException(status_code=400, detail="Feedback must include a rating")
-            
-        success = task_manager.process_feedback(task_id, feedback)
-        
-        if not success:
-            raise HTTPException(status_code=404, detail=f"Task ID {task_id} not found")
-            
-        return {"status": "success", "message": "Feedback processed"}
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.error(f"Failed to process feedback: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-@app.post("/selling-initiatives/generate")
-async def generate_selling_initiatives(
-    background_tasks: BackgroundTasks,
-    user_crops: List[str] = Query(..., description="List of crops the user has"),
-    buyers_file: str = Query("fictional_buyers_dataset.csv", description="Path to CSV file with buyer data"),
-    prices_file: str = Query("philippines_crop_prices_mock_data.csv", description="Path to CSV file with crop price data")
-):
-    """Generate AI-recommended selling initiatives based on buyer and crop price data"""
-    try:
-        # Start initiative generation in the background for better UX
-        background_tasks.add_task(
-            task_manager.generate_selling_initiatives, 
-            user_crops=user_crops,  # Pass the new parameter
-            buyers_file_path=buyers_file,
-            crop_prices_file_path=prices_file
-        )
-        
-        return {
-            "status": "success",
-            "message": "Selling initiative generation started. Check /selling-initiatives/list to view results once generated."
-        }
-    except Exception as e:
-        logger.error(f"Selling initiative generation failed to start: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/selling-initiatives/list")
 async def list_selling_initiatives():
