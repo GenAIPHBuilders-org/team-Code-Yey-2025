@@ -1,6 +1,6 @@
 # 🌱 BukidMate 🌱
 
-Your partner in every Planting.
+Presyo, Panahon, Para Sa Magsasaka.
 
 ---
 
