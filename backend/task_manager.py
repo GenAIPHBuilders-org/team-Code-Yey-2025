@@ -112,9 +112,18 @@ class FarmTaskManager:
         }
 
         system_prompt = (
-            "You are an expert agricultural sales strategist. Your objective is to create a personalized selling initiative "
-            "that connects a farmer's crop to the best possible buyer based on price, buyer type, and regional data. "
-            "The initiative should be one paragraph explaining the value proposition for this buyer and how to approach them."
+            """Ikaw ay isang expert na sales strategist sa agrikultura. 
+            Ang goal mo ay gumawa ng personalized na selling initiative na magkokonekta sa ani ng magsasaka sa pinaka-best na buyer base sa presyo, 
+            klase ng buyer, at regional na data. Dapat isang maikling talata lang ang initiative na nagpapaliwanag kung bakit swak ang buyer na ito at
+            paano siya dapat lapitan o kausapin.
+
+            IMPORTANT RULES:
+            1. TAGLISH LANG
+            2. Huwag magsalita ng english.
+            2. 2 hanggang 3 pangungusap lang.
+            3. Iwasan ang jargon at masyadong teknikal na salita.
+
+            """ 
         )
 
         user_prompt_content = json.dumps(context_for_ai, indent=2)
@@ -144,141 +153,7 @@ class FarmTaskManager:
             return [f"Failed to generate initiative. Error: {str(e)}"]
 
 
-    async def generate_tasks(self, weather_data: Dict, crop_info: Dict) -> List[Dict]:
-        """Generate farm tasks based on weather and crop data."""
-        logger.info("Starting farm task generation.")
-        
-        if not self.client.api_key:
-            logger.error("API key not configured. Cannot generate tasks.")
-            return []
-        
-        tasks = []
-        current_date_str = datetime.now().strftime("%Y-%m-%d")
-        
-        try:
-            # Prepare context for AI
-            context_for_ai = {
-                "user_crops": crop_info.get("user_crops", []),
-                "weather_data": weather_data,
-                "crop_info": crop_info,
-                "current_date": current_date_str
-            }
-            
-            system_prompt = (
-                "You are an expert agricultural advisor specialized in Philippine farming conditions. "
-                "Generate a list of 5 important farm tasks based on the current weather forecast and crop market data. "
-                "Each task should include: 1) A clear action title, 2) Brief justification referencing weather or market conditions, "
-                "3) Suggested timeframe to complete the task, 4) Priority level (High, Medium, Low). "
-                "Focus on practical, actionable advice that farmers can implement immediately. "
-                "Consider seasonal factors, current weather patterns, and market trends in your recommendations."
-            )
-            
-            user_prompt_content = json.dumps(context_for_ai, indent=2)
-            
-            completion = self.client.chat.completions.create(
-                model="deepseek/deepseek-r1-zero:free",
-                messages=[
-                    {
-                        "role": "system",
-                        "content": system_prompt
-                    },
-                    {
-                        "role": "user",
-                        "content": user_prompt_content
-                    }
-                ],
-                temperature=0.7
-            )
-            
-            ai_response = completion.choices[0].message.content.strip()
-            logger.info("Successfully received AI task recommendations")
-            
-            # Process AI response into structured tasks
-            # This is a simplified implementation - production code would parse the AI response more robustly
-            import uuid
-            
-            task_lines = ai_response.split("\n\n")
-            for task_text in task_lines:
-                if not task_text.strip():
-                    continue
-                    
-                # Extract task components - in production, use more robust parsing
-                lines = task_text.strip().split("\n")
-                if len(lines) < 2:
-                    continue
-                    
-                title = lines[0].replace("Task:", "").replace("**", "").strip()
-                description = " ".join(lines[1:])
-                
-                # Extract priority if it exists
-                priority = "Medium"  # Default
-                if "Priority:" in description:
-                    if "high" in description.lower():
-                        priority = "High"
-                    elif "low" in description.lower():
-                        priority = "Low"
-                
-                task_id = str(uuid.uuid4())
-                task = {
-                    "id": task_id,
-                    "title": title,
-                    "description": description,
-                    "priority": priority,
-                    "created_at": current_date_str
-                }
-                
-                tasks.append(task)
-                self.tasks[task_id] = task
-                
-            logger.info(f"Generated {len(tasks)} tasks")
-            return tasks
-            
-        except Exception as e:
-            logger.error(f"Task generation failed: {str(e)}", exc_info=True)
-            return []
-
-    async def prioritize_tasks(self, tasks: List[Dict], context: Dict) -> List[Dict]:
-        """Prioritize the given tasks based on context data."""
-        logger.info("Prioritizing farm tasks.")
-        
-        if not tasks:
-            logger.warning("No tasks to prioritize.")
-            return []
-            
-        try:
-            # Simple prioritization - in production, use the AI model for more sophisticated prioritization
-            # Sort by priority level
-            priority_order = {"High": 0, "Medium": 1, "Low": 2}
-            prioritized = sorted(tasks, key=lambda x: priority_order.get(x.get("priority", "Medium"), 1))
-            
-            # Add additional priority information
-            for task in prioritized:
-                task["priority_reason"] = f"Based on current conditions, this task is {task.get('priority', 'Medium')} priority."
-            
-            return prioritized
-            
-        except Exception as e:
-            logger.error(f"Task prioritization failed: {str(e)}", exc_info=True)
-            return tasks  # Return original tasks if prioritization fails
-
-    def process_feedback(self, task_id: str, feedback: Dict) -> bool:
-        """Process user feedback on tasks for future improvement."""
-        try:
-            if task_id not in self.tasks:
-                logger.warning(f"Task ID {task_id} not found for feedback.")
-                return False
-                
-            # Store the feedback with the task
-            task = self.tasks[task_id]
-            task["feedback"] = feedback
-            
-            # Here you would typically store this feedback for model improvement
-            logger.info(f"Processed feedback for task {task_id}: {feedback.get('rating')}/5")
-            return True
-            
-        except Exception as e:
-            logger.error(f"Failed to process feedback for task {task_id}: {str(e)}")
-            return False
+    
 
 # For direct script testing
 async def main_test():
