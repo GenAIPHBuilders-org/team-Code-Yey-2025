@@ -12,6 +12,8 @@ from price_predict import CropsPricePredictor
 from weather import get_weather_forecast
 from task_manager import FarmTaskManager
 from fastapi import BackgroundTasks
+from fastapi.middleware.cors import CORSMiddleware
+
 
 # Setup
 load_dotenv()
@@ -32,6 +34,16 @@ client = OpenAI(
     }
 )
 
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 @app.get("/")
 async def root():
     """API root endpoint"""
@@ -44,7 +56,7 @@ async def root():
 @app.post("/live-model-test")
 async def test_model_with_live_weather(
     crop: str = Query(...), 
-    region: str = Query(...)
+    region: str = Query(...),
 ):
     """Test the price prediction model with live weather data"""
     try:
@@ -83,6 +95,7 @@ async def test_model_with_live_weather(
             temperature=0.7,
             stream=False
         )
+        
 
         # Extract response content safely
         choices = getattr(completion, "choices", [])
@@ -108,7 +121,7 @@ async def test_model_with_live_weather(
             f"Sa {region} ngayong {date}, ang inaasahang presyo ng {crop} ay ₱{price:.2f}."
             f" {analysis}. {summary}"
         )
-
+      
         return {
             "status": "success",
             "summary": combined_summary,
