@@ -53,19 +53,15 @@ export function ChatInput({ onSendMessage, onApiResponse }: ChatInputProps) {
         return;
       }
       
-      // Handle "Region, Crop" format
       const splitMessage = trimmedMessage.split(", ");
       
       if (splitMessage.length === 2) {
-        // For "Region, Crop" format
         let region = splitMessage[0];
         let crop = splitMessage[1];
         
-        // Store these for potential future confirmation
         setLastRegion(region);
         setLastCrop(crop);
         
-        // Format the region for URL
         let splitRegion = region.split(" ").join("%20");
         
         try {
@@ -87,9 +83,7 @@ export function ChatInput({ onSendMessage, onApiResponse }: ChatInputProps) {
           }
         }
       } else {
-        // Handle when the format is not as expected - either single word or more than 2 parts
         try {
-          // Use default region or last known region if available
           let crop = trimmedMessage;
           let splitRegion = lastRegion ? lastRegion.split(" ").join("%20") : "";
           
@@ -104,7 +98,6 @@ export function ChatInput({ onSendMessage, onApiResponse }: ChatInputProps) {
               onApiResponse(response.data);
             }
           } else {
-            // If we can't determine region and crop, notify the user
             if (onApiResponse) {
               onApiResponse({
                 status: "error",
@@ -137,7 +130,6 @@ export function ChatInput({ onSendMessage, onApiResponse }: ChatInputProps) {
   const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setMessage(e.target.value)
 
-    // Auto-resize textarea
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto"
       textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 120)}px`
