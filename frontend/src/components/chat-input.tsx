@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState, useRef, type KeyboardEvent, useEffect } from "react"
+import { useState, useRef, type KeyboardEvent } from "react"
 import { Send, Paperclip, Smile } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
@@ -11,31 +11,120 @@ import axios from "axios"
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void
+  onApiResponse?: (data: any) => void
 }
 
-export function ChatInput({ onSendMessage }: ChatInputProps) {
-  const [message, setMessage] = useState("")
+export function ChatInput({ onSendMessage, onApiResponse }: ChatInputProps) {
+  const [message, setMessage] = useState("");
+  const [lastCrop, setLastCrop] = useState("");
+  const [lastRegion, setLastRegion] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-  const handleSend = () => {
-    let splitRegion = '';
-
+  const handleSend = async () => {
     if (message.trim()) {
       onSendMessage(message.trim())
+      
+      const trimmedMessage = message.trim();
+      
       setMessage("")
       if (textareaRef.current) {
         textareaRef.current.style.height = "auto"
       }
+      
+      if (trimmedMessage === "OO" || trimmedMessage === "HINDI") {
+        try {
+          const response = await axios.post(
+            `http://localhost:8000/confirm-sell?response=${trimmedMessage}&crop=${lastCrop}&region=${lastRegion}`
+          );
+          
+          if (onApiResponse && response.data) {
+            onApiResponse(response.data);
+          }
+        } catch (error) {
+          console.error("API call failed:", error);
+          if (onApiResponse) {
+            onApiResponse({
+              status: "error",
+              sender: "bot",
+              message: "Failed to process your confirmation. Please try again."
+            });
+          }
+        }
+        return;
+      }
+      
+      // Handle "Region, Crop" format
+      const splitMessage = trimmedMessage.split(", ");
+      
+      if (splitMessage.length === 2) {
+        // For "Region, Crop" format
+        let region = splitMessage[0];
+        let crop = splitMessage[1];
+        
+        // Store these for potential future confirmation
+        setLastRegion(region);
+        setLastCrop(crop);
+        
+        // Format the region for URL
+        let splitRegion = region.split(" ").join("%20");
+        
+        try {
+          const response = await axios.post(
+            `http://localhost:8000/live-model-test?crop=${crop}&region=${splitRegion}`
+          );
+          
+          if (onApiResponse && response.data) {
+            onApiResponse(response.data);
+          }
+        } catch (error) {
+          console.error("API call failed:", error);
+          if (onApiResponse) {
+            onApiResponse({
+              status: "error",
+              sender: "bot",
+              message: "Failed to get response from server. Please try again."
+            });
+          }
+        }
+      } else {
+        // Handle when the format is not as expected - either single word or more than 2 parts
+        try {
+          // Use default region or last known region if available
+          let crop = trimmedMessage;
+          let splitRegion = lastRegion ? lastRegion.split(" ").join("%20") : "";
+          
+          if (splitRegion) {
+            setLastCrop(crop);
+            
+            const response = await axios.post(
+              `http://localhost:8000/live-model-test?crop=${crop}&region=${splitRegion}`
+            );
+            
+            if (onApiResponse && response.data) {
+              onApiResponse(response.data);
+            }
+          } else {
+            // If we can't determine region and crop, notify the user
+            if (onApiResponse) {
+              onApiResponse({
+                status: "error",
+                sender: "bot",
+                message: "Please provide both region and crop in format: 'Region, Crop'"
+              });
+            }
+          }
+        } catch (error) {
+          console.error("API call failed:", error);
+          if (onApiResponse) {
+            onApiResponse({
+              status: "error",
+              sender: "bot",
+              message: "Failed to get response from server. Please try again."
+            });
+          }
+        }
+      }
     }
-
-    const splitMessage = message.split(", ");
-    console.log(splitMessage);
-
-    if(splitMessage.length === 2) {
-      splitRegion = splitMessage[1].split(" ").join("%20");
-    }
-    
-    // axios.post(`http://localhost:8000/live-model-test?crop=Tomato&region=Central%20Luzon`)
   }
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
