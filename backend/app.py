@@ -123,8 +123,8 @@ async def test_model_with_live_weather(
       
         return {
             "status": "success",
-            "role": "bot",
-            "summary": combined_summary,
+            "sender": "bot",
+            "message": combined_summary,
             "follow_up": f"Gusto mo ba ibenta {crop} sa {region}? Mag type ng 'OO' upang ituloy.",
             "next_action": {
                 "endpoint": "/confirm-sell",
