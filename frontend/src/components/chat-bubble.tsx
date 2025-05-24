@@ -4,6 +4,7 @@ import { Bot, User } from "lucide-react"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Card, CardContent } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
+import Image from "next/image"
 
 interface Message {
   id: number
@@ -25,7 +26,7 @@ export function ChatBubble({ message, isTyping = false }: ChatBubbleProps) {
       {isBot && (
         <Avatar className="h-8 w-8 shrink-0">
           <AvatarFallback className="bg-primary text-primary-foreground">
-            <Bot className="h-4 w-4" />
+            <Image src="/logo.png" height={32} width={32} alt="BukidMate's Logo" className="w-10 h-10" />
           </AvatarFallback>
         </Avatar>
       )}
