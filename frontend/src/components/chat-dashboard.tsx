@@ -18,48 +18,36 @@ import {
 } from "@/components/ui/sidebar"
 import { ChatInterface } from "@/components/chat-interface"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import Image from "next/image"
 
 const philippinesRegions = [
-  "National Capital Region (NCR)",
-  "Cordillera Administrative Region (CAR)",
-  "Ilocos Region (Region I)",
-  "Cagayan Valley (Region II)",
-  "Central Luzon (Region III)",
-  "Calabarzon (Region IV-A)",
-  "Mimaropa (Region IV-B)",
-  "Bicol Region (Region V)",
-  "Western Visayas (Region VI)",
-  "Central Visayas (Region VII)",
-  "Eastern Visayas (Region VIII)",
-  "Zamboanga Peninsula (Region IX)",
-  "Northern Mindanao (Region X)",
-  "Davao Region (Region XI)",
-  "Soccsksargen (Region XII)",
-  "Caraga (Region XIII)",
-  "BARMM",
+  "Northern Mindanao",
+  "Eastern Visayas",
+  "Ilocos Region",
+  "Bicol Region",
+  "Western Visayas",
+  "Cagayan Valley",
+  "Central Luzon",
+  "Davao Region",
+  "CALABARZON",
+  "Central Visayas",
+  "Zamboanga Peninsula",
+  "SOCCSKSARGEN"
 ]
 
 const availableCrops = [
-  "Rice",
-  "Corn",
-  "Coconut",
   "Sugarcane",
   "Banana",
-  "Mango",
-  "Pineapple",
   "Coffee",
-  "Cacao",
-  "Abaca",
-  "Tobacco",
-  "Sweet Potato",
-  "Cassava",
-  "Onion",
   "Garlic",
+  "Coconut",
+  "Pineapple",
   "Tomato",
-  "Eggplant",
-  "Cabbage",
-  "Lettuce",
-  "Carrots",
+  "Tobacco",
+  "Rice",
+  "Mango",
+  "Onion",
+  "Corn"
 ]
 
 export function ChatDashboard() {
@@ -132,7 +120,7 @@ export function ChatDashboard() {
             <div className="flex items-center gap-2">
               <Avatar className="h-8 w-8">
                 <AvatarFallback>
-                  <Bot className="h-4 w-4" />
+                  <Image src="/logo.png" height={32} width={32} alt="BukidMate's Logo" className="w-10 h-10" />
                 </AvatarFallback>
               </Avatar>
               <div>
