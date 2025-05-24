@@ -68,7 +68,7 @@ export function ChatInterface() {
     scrollToBottom()
   }, [messages, isTyping])
 
-  const handleSendMessage = async (content: string) => {
+  const handleSendMessage = (content: string) => {
     const userMessage: Message = {
       id: messages.length + 1,
       content,
@@ -78,19 +78,35 @@ export function ChatInterface() {
 
     setMessages((prev) => [...prev, userMessage])
     setIsTyping(true)
+  }
 
-    // Simulate bot response
-    setTimeout(() => {
-      const botMessage: Message = {
+  const handleApiResponse = (data: any) => {
+    setIsTyping(false)
+    
+    if (data.message) {
+      const mainMessage: Message = {
         id: messages.length + 2,
-        content:
-          "Thank you for your message! I'm processing your request and will provide you with a detailed response shortly. Is there anything specific you'd like me to focus on?",
+        content: data.message,
         sender: "bot",
         timestamp: new Date(),
       }
-      setMessages((prev) => [...prev, botMessage])
-      setIsTyping(false)
-    }, 1500)
+      
+      setMessages((prev) => [...prev, mainMessage])
+    }
+    
+    // Add the follow-up message if it exists
+    if (data.follow_up) {
+      setTimeout(() => {
+        const followUpMessage: Message = {
+          id: messages.length + 3,
+          content: data.follow_up,
+          sender: "bot",
+          timestamp: new Date(),
+        }
+        
+        setMessages((prev) => [...prev, followUpMessage])
+      }, 500)
+    }
   }
 
   return (
@@ -116,7 +132,10 @@ export function ChatInterface() {
 
       <div className="border-t p-4">
         <div className="max-w-4xl mx-auto">
-          <ChatInput onSendMessage={handleSendMessage} />
+          <ChatInput 
+            onSendMessage={handleSendMessage}
+            onApiResponse={handleApiResponse}
+          />
         </div>
       </div>
     </div>
