@@ -14,7 +14,6 @@ from task_manager import FarmTaskManager
 from fastapi import BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 
-
 # Setup
 load_dotenv()
 app = FastAPI(title="Farm Assistant API")
@@ -124,6 +123,7 @@ async def test_model_with_live_weather(
       
         return {
             "status": "success",
+            "role": "bot",
             "summary": combined_summary,
             "follow_up": f"Gusto mo ba ibenta {crop} sa {region}? Mag type ng 'OO' upang ituloy.",
             "next_action": {
